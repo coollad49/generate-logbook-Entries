@@ -21,6 +21,8 @@ import {
 } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
 import { useRouter } from "next/navigation"
+import { ToastAction } from "@/components/ui/toast"
+import { useToast } from "@/components/ui/use-toast"
 
 export function Format() {
     const [title, setTitle] = useState('');
@@ -30,8 +32,16 @@ export function Format() {
     const [textLength, setTextLength] = useState('');
     const [loading, setLoading] = useState(false);
     const router = useRouter();
+    const { toast } = useToast()
 
     const sendInputs = async()=>{
+        if(!title || !description || !weeks || !tech || !textLength){
+            toast({
+                variant: "destructive",
+                title: "Uh oh! You didn't fill in all the fields."
+            })
+            return;
+        }
         setLoading(true);
         try{
             const response = await fetch('/api/model', {
@@ -80,7 +90,7 @@ export function Format() {
         <Card className="w-[500px]">
         <CardHeader>
             <CardTitle>Generate Logbook Entries</CardTitle>
-            <CardDescription></CardDescription>
+            <CardDescription>Powered By Lucas🚀🚀</CardDescription>
         </CardHeader>
         <CardContent>
             <form>
@@ -90,7 +100,7 @@ export function Format() {
                     <Input 
                     onChange={(e) => setTitle(e.target.value)}
                     value={title}
-                    id="title" placeholder="Provide your Project Title" />
+                    id="title" placeholder="Provide your Project Title"/>
                 </div>
                 <div className="flex flex-col space-y-2">
                     <Label htmlFor="description">Description</Label>
