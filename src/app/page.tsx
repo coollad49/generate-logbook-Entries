@@ -1,7 +1,4 @@
-'use client'
 import { Format } from '@/components/modified-card';
-import {useState} from 'react';
-
 export default function Home() {
   
   return (

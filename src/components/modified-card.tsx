@@ -19,12 +19,63 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { Textarea } from "@/components/ui/textarea"
+import { useRouter } from "next/navigation"
 
 export function Format() {
-    const [url, setUrl] = useState('');
+    const [title, setTitle] = useState('');
+    const [description, setDescription] = useState('');
     const [weeks, setWeeks] = useState('');
     const [tech, setTech] = useState('');
     const [textLength, setTextLength] = useState('');
+    const [loading, setLoading] = useState(false);
+    const router = useRouter();
+
+    const sendInputs = async()=>{
+        setLoading(true);
+        try{
+            const response = await fetch('/api/model', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    title,
+                    description,
+                    weeks,
+                    tech,
+                    textLength,
+                }),
+            });
+
+            if (!response.ok) {
+                throw new Error('Network response was not ok')
+            }
+          
+            const reader = response.body?.getReader()
+            const decoder = new TextDecoder()
+            
+            let fullResponse = '';
+            while (true) {
+                const { done, value } = await reader?.read() || {};
+                if (done) break
+                const text = decoder.decode(value, { stream: true });
+                fullResponse += text;
+            }
+
+            sessionStorage.setItem('modelResponse', fullResponse);
+
+            // Redirect to the next page
+            router.push('/report');
+            setLoading(false);
+        }
+        catch(error){
+            console.error('Error:', error)
+            setLoading(false);
+        }
+
+
+    }
     return (
         <Card className="w-[500px]">
         <CardHeader>
@@ -35,12 +86,20 @@ export function Format() {
             <form>
             <div className="grid w-full items-center gap-6">
                 <div className="flex flex-col space-y-2">
-                    <Label htmlFor="url">Github Repo</Label>
+                    <Label htmlFor="title">Project Title</Label>
                     <Input 
-                    onChange={(e) => setUrl(e.target.value)}
-                    value={url}
-                    id="url" placeholder="Your Github repository URL" />
+                    onChange={(e) => setTitle(e.target.value)}
+                    value={title}
+                    id="title" placeholder="Provide your Project Title" />
                 </div>
+                <div className="flex flex-col space-y-2">
+                    <Label htmlFor="description">Description</Label>
+                    <Textarea 
+                    onChange={(e) => setDescription(e.target.value)}
+                    value={description}
+                    id="description" placeholder="Provide a consise, accurate description including goals, milestones, or significant achievements" />
+                </div>
+
                 <div className="flex flex-col space-y-2">
                     <Label htmlFor="weeks">Weeks</Label>
                     <Input
@@ -71,7 +130,7 @@ export function Format() {
             </form>
         </CardContent>
         <CardFooter className="flex justify-center ">
-            <Button className="w-52">Generate</Button>
+            <Button className="w-52" onClick={sendInputs} disabled={loading}>Generate 🎉</Button>
         </CardFooter>
         </Card>
     )
