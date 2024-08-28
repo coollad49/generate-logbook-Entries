@@ -1,5 +1,5 @@
 'use client'
-import { Format } from '@/components/modified-card';
+import { Format } from '@/components/Format';
 import { UserContext } from '@/context/AuthContext';
 import { useEffect, useState, useContext } from 'react';
 import { useRouter } from 'next/navigation';
@@ -14,15 +14,19 @@ export default function Home() {
   useEffect(() => {
     const checkAuthentication = async () => {
       await new Promise((resolve) => setTimeout(resolve, 50));
-      if (!user) {
-        router.push('/login');
-      } else {
-        setLoading(false);
-      }
+      setLoading(false);
     };
     checkAuthentication();
-  }, [user, router]);
+  }, [user]);
 
+  const login = ()=>{
+    if (!loading && !user) {
+      router.push("/login");
+    }
+    else{
+      router.push("/report")
+    }
+  }
   if (loading) {
     return (
       <div className="flex items-center justify-center text-white h-screen relative">
@@ -33,7 +37,7 @@ export default function Home() {
 
   return (
     <div className="flex items-center justify-center text-white h-screen relative">
-      <Format />
+      <Format loginCheck={login}/>
     </div>
   );
 }

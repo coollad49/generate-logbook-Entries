@@ -25,7 +25,7 @@ import { useRouter } from "next/navigation"
 import { useToast } from "@/components/ui/use-toast"
 import {UserContext} from "@/context/AuthContext"
 
-export function Format() {
+export function Format({loginCheck}:any) {
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const [weeks, setWeeks] = useState('');
@@ -34,7 +34,7 @@ export function Format() {
     const [loading, setLoading] = useState(false);
     const router = useRouter();
     const { toast } = useToast()
-    const {logOut} = UserContext();
+    const {logOut, user} = UserContext();
 
     const sendInputs = async()=>{
         if(!title || !description || !weeks || !tech || !textLength){
@@ -78,7 +78,7 @@ export function Format() {
             sessionStorage.setItem('modelResponse', fullResponse);
 
             // Redirect to the next page
-            router.push('/report');
+            await loginCheck()
             setLoading(false);
         }
         catch(error){
@@ -91,10 +91,7 @@ export function Format() {
     return (
         <Card className="w-[500px]">
         <CardHeader>
-            <CardTitle className="flex justify-between items-center">Generate Logbook Entries <Button onClick={ async()=>{
-                await logOut()
-                router.push("/login")
-            }}><LogOut/></Button></CardTitle>
+            <CardTitle className="flex justify-between items-center">Generate Logbook Entries {user ?<Button onClick={ async()=>await logOut()}><LogOut/></Button> : ''}</CardTitle>
             <CardDescription>Powered By Lucas🚀🚀</CardDescription>
         </CardHeader>
         <CardContent>
@@ -108,7 +105,7 @@ export function Format() {
                     id="title" placeholder="Provide your Project Title"/>
                 </div>
                 <div className="flex flex-col space-y-2">
-                    <Label htmlFor="description">Description</Label>
+                    <Label htmlFor="description">Description / Summary</Label>
                     <Textarea 
                     onChange={(e) => setDescription(e.target.value)}
                     value={description}

@@ -13,7 +13,7 @@ const Login = ()=>{
     const route = useRouter()
     
     if(user){
-        route.push("/")
+        route.push("/report")
     }
     const handleGoogleSignIn = async ()=>{
         setLoading(true)
