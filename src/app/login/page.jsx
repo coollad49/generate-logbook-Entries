@@ -34,15 +34,10 @@ const Login = ()=>{
                     
                 </CardHeader>
                 <CardContent>
-                    {loading ?
-                        (<Button disabled className="w-full mt-4">
-                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                            Login with Google
-                        </Button>) : 
-                        (<Button onClick={handleGoogleSignIn} variant="outline" className="w-full mt-4">
-                            Login with Google
-                        </Button>)
-                    }
+                    <Button disabled={loading} onClick={handleGoogleSignIn} variant="outline" className="w-full mt-4">
+                        {loading?<Loader2 className="mr-2 h-4 w-4 animate-spin" />:""}
+                        Login with Google
+                    </Button>
                 </CardContent>
                 
             </Card>

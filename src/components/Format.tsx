@@ -1,6 +1,6 @@
 "use client"
 import {useState} from "react"
-import { LogOut } from "lucide-react"
+import { Loader2, LogOut } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -120,7 +120,7 @@ export function Format({loginCheck}:any) {
                     id="weeks" placeholder="Min of 1 and Max of 6"/>
                 </div>
                 <div className="flex flex-col space-y-2">
-                    <Label htmlFor="tech">Tech Stack</Label>
+                    <Label htmlFor="tech">Tech / Frameworks</Label>
                     <Input
                     onChange={(e) => setTech(e.target.value)}
                     value={tech} 
@@ -142,7 +142,7 @@ export function Format({loginCheck}:any) {
             </form>
         </CardContent>
         <CardFooter className="flex justify-center ">
-            <Button className="w-52" onClick={sendInputs} disabled={loading}>Generate 🎉</Button>
+            <Button className="w-52" onClick={sendInputs} disabled={loading}>{loading?<Loader2 className="mr-2 h-4 w-4 animate-spin" />:""}Generate 🎉</Button>
         </CardFooter>
         </Card>
     )
