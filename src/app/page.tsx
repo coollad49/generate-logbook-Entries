@@ -14,16 +14,14 @@ export default function Home() {
   useEffect(() => {
     const checkAuthentication = async () => {
       await new Promise((resolve) => setTimeout(resolve, 50));
-      setLoading(false);
+      if (!user) {
+        router.push('/login');
+      } else {
+        setLoading(false);
+      }
     };
     checkAuthentication();
-  }, [user]);
-
-  useEffect(() => {
-    if (!loading && !user) {
-      router.push("/login");
-    }
-  }, [loading, user, router]);
+  }, [user, router]);
 
   if (loading) {
     return (

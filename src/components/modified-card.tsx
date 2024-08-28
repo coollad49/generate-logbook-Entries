@@ -1,5 +1,6 @@
 "use client"
 import {useState} from "react"
+import { LogOut } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -21,8 +22,8 @@ import {
 } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
 import { useRouter } from "next/navigation"
-import { ToastAction } from "@/components/ui/toast"
 import { useToast } from "@/components/ui/use-toast"
+import {UserContext} from "@/context/AuthContext"
 
 export function Format() {
     const [title, setTitle] = useState('');
@@ -33,6 +34,7 @@ export function Format() {
     const [loading, setLoading] = useState(false);
     const router = useRouter();
     const { toast } = useToast()
+    const {logOut} = UserContext();
 
     const sendInputs = async()=>{
         if(!title || !description || !weeks || !tech || !textLength){
@@ -89,7 +91,10 @@ export function Format() {
     return (
         <Card className="w-[500px]">
         <CardHeader>
-            <CardTitle>Generate Logbook Entries</CardTitle>
+            <CardTitle className="flex justify-between items-center">Generate Logbook Entries <Button onClick={ async()=>{
+                await logOut()
+                router.push("/login")
+            }}><LogOut/></Button></CardTitle>
             <CardDescription>Powered By Lucas🚀🚀</CardDescription>
         </CardHeader>
         <CardContent>
