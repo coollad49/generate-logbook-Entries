@@ -34,7 +34,20 @@ export function Format({loginCheck}:any) {
     const [loading, setLoading] = useState(false);
     const router = useRouter();
     const { toast } = useToast()
-    const {logOut, user} = UserContext();
+    const {logOut, user, googleSignIn} = UserContext();
+
+    const handleGoogleSignIn = async () => {
+        if (!user) {
+            try {
+                await googleSignIn(); // User action should trigger this
+            } catch (error) {
+                console.log(error);
+                setLoading(false);
+                return false;
+            }
+        }
+        return true;
+    };
 
     const sendInputs = async()=>{
         if(!title || !description || !weeks || !tech || !textLength){
@@ -45,6 +58,12 @@ export function Format({loginCheck}:any) {
             return;
         }
         setLoading(true);
+        const isAuthenticated = await handleGoogleSignIn();
+        if (!isAuthenticated) {
+            setLoading(false);
+            return;
+        }
+        
         try{
             const response = await fetch('/api/model', {
                 method: 'POST',
@@ -77,8 +96,7 @@ export function Format({loginCheck}:any) {
 
             sessionStorage.setItem('modelResponse', fullResponse);
 
-            // Redirect to the next page
-            await loginCheck()
+            router.push("/report")
             setLoading(false);
         }
         catch(error){

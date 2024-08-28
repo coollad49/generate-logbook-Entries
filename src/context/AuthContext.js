@@ -3,15 +3,22 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { auth } from "@/app/firebase/config";
 import {signInWithPopup, signOut, onAuthStateChanged, GoogleAuthProvider} from "firebase/auth"
-
+import { useRouter } from "next/navigation";
 const AuthContext = createContext();
 
 export const AuthProvider = ({children})=>{
+    const router = useRouter();
     const [user, setUser] = useState(null);
 
-    const googleSignIn= ()=>{
+    const googleSignIn= async()=>{
         const provider = new GoogleAuthProvider()
-        signInWithPopup(auth, provider)
+        try {
+            await signInWithPopup(auth, provider);
+            router.push("/report"); // Navigate after successful sign-in
+        } catch (error) {
+            console.log("Google Sign-In Error:", error);
+            // Handle any errors (e.g., show an error message to the user)
+        }
     }
 
     const logOut = ()=>{
